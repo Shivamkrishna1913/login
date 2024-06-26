@@ -1,9 +1,10 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
+const path = require("path");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Simulated database (for demonstration purposes)
 const users = {
@@ -13,7 +14,7 @@ const users = {
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
-app.post("/login", (req, res) => {
+app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
 
   if (!users[username]) {
@@ -31,6 +32,10 @@ app.post("/login", (req, res) => {
       .status(401)
       .json({ success: false, message: "Invalid username or password." });
   }
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.listen(PORT, () => {
